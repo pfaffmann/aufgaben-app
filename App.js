@@ -14,14 +14,8 @@ export default function App() {
         title="Change Text"
         onPress={() => setOutputText("The Text changed!!")}
       />
-      <Text>{counter}</Text>
-      <Button title="Counter++" onPress={()=>Counterplusplus()} />
     </View>
   );
-}
-
-function Counterplusplus() {
-  counter++;
 }
 
 const styles = StyleSheet.create({
