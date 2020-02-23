@@ -5,7 +5,7 @@ var counter = 0;
 
 export default function App() {
   const [outputText, setOutputText] = useState(
-    "Open up App.js to start working on your app!"
+    "Open up App.js to start working on your app!!"
   );
   return (
     <View style={styles.container}>
