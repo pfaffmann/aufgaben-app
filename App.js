@@ -9,12 +9,11 @@ import {
   FlatList
 } from "react-native";
 
-import AufgabenItem from "./components/AufgabenItem";
+import AufgabenItem from "./components/AufgabenItem.js";
 
 export default function App() {
   const [aufgabe, setAufgabe] = useState("");
   const [aufgabenListe, setAufgabenListe] = useState([]);
-  const [listKey, setListKey] = useState(0);
 
   const aufgabenInputHandler = enteredText => {
     setAufgabe(enteredText);
@@ -25,8 +24,6 @@ export default function App() {
       ...currentAufgabenListe,
       { key: Math.random().toString(), value: aufgabe }
     ]);
-    setListKey(listKey + 1);
-    console.log(aufgabe + " " + listKey);
   };
 
   return (
