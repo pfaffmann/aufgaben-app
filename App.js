@@ -36,6 +36,7 @@ export default function App() {
       return currentAufgabenListe.map(aufgabe => {
         if (aufgabe.key === aufgabeKey) {
           aufgabe.istErledigt = true;
+          aufgabe.value += " | Erledigt";
           return aufgabe;
         } else {
           return aufgabe;
