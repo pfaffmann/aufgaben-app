@@ -1,63 +1,122 @@
 import React, { useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  Button,
-  TextInput,
-  ScrollView,
-  FlatList
-} from "react-native";
+import { StyleSheet, View, Button, FlatList, Text } from "react-native";
 
-import AufgabenItem from "./components/AufgabenItem.js";
+import AufgabenItem from "./components/AufgabenItem";
+import AufgabenInput from "./components/AufgabenInput";
+import AufgabenKopf from "./components/AufgabenKopf";
 
 export default function App() {
-  const [aufgabe, setAufgabe] = useState("");
   const [aufgabenListe, setAufgabenListe] = useState([]);
+  const [isAddMode, setIsAddMode] = useState(false);
+  const [erledigtCounter, setErledigtCounter] = useState(0);
 
-  const aufgabenInputHandler = enteredText => {
-    setAufgabe(enteredText);
-  };
-
-  const addAufgabeHandler = () => {
+  const addAufgabeHandler = aufgabenText => {
+    var id = Math.random().toString();
     setAufgabenListe(currentAufgabenListe => [
       ...currentAufgabenListe,
-      { key: Math.random().toString(), value: aufgabe }
+      { key: id, value: aufgabenText, istErledigt: false }
     ]);
+    setIsAddMode(false);
+    countErledigteAufgaben();
   };
 
+  const cancelAufgabenHandler = () => {
+    setIsAddMode(false);
+  };
+
+  const removeAufgabeHandler = aufgabeKey => {
+    setAufgabenListe(currentAufgabenListe => {
+      return currentAufgabenListe.filter(aufgabe => aufgabe.key !== aufgabeKey);
+    });
+    countErledigteAufgaben();
+  };
+
+  const checkAufgabeHandler = aufgabeKey => {
+    setAufgabenListe(currentAufgabenListe => {
+      return currentAufgabenListe.map(aufgabe => {
+        if (aufgabe.key === aufgabeKey) {
+          aufgabe.istErledigt = true;
+          return aufgabe;
+        } else {
+          return aufgabe;
+        }
+      });
+    });
+    countErledigteAufgaben();
+  };
+
+  const countErledigteAufgaben = () => {
+    var count = 0;
+    if (aufgabenListe.length > 0) {
+      aufgabenListe.forEach(element => {
+        if (element.istErledigt) {
+          count++;
+        }
+      });
+    }
+    setErledigtCounter(count);
+    console.log(aufgabenListe);
+  };
+
+  const head = "Erledigte Aufgaben:";
   return (
     <View style={styles.screen}>
-      <View style={styles.containerInput}>
-        <TextInput
-          placeholder="Aufgaben"
-          style={styles.textInput}
-          onChangeText={aufgabenInputHandler}
-          value={aufgabe}
+      <View style={styles.header}>
+        <AufgabenKopf
+          title={head}
+          anzErledigt={erledigtCounter}
+          anzGesamt={aufgabenListe.length}
         />
-        <Button title="Add" onPress={addAufgabeHandler} />
       </View>
-      <FlatList
-        data={aufgabenListe}
-        renderItem={itemData => <AufgabenItem title={itemData.item.value} />}
-      />
+      <View style={styles.body}>
+        <View style={styles.list}>
+          <FlatList
+            data={aufgabenListe}
+            renderItem={itemData => (
+              <AufgabenItem
+                id={itemData.item.key}
+                onDelete={removeAufgabeHandler}
+                onCheck={checkAufgabeHandler}
+                title={itemData.item.value}
+              />
+            )}
+          />
+        </View>
+        <View style={styles.button}>
+          <Button
+            title="Aufgabe hinzufügen"
+            onPress={() => setIsAddMode(true)}
+          />
+        </View>
+
+        <AufgabenInput
+          visible={isAddMode}
+          onAddAufgabe={addAufgabeHandler}
+          onCancel={cancelAufgabenHandler}
+        />
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: {
+  screen: {},
+  body: {
     flexDirection: "column",
-    padding: 50
+    padding: 20
   },
-  containerInput: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center"
+  header: {
+    backgroundColor: "#eee",
+    height: "10%",
+    alignItems: "center",
+    justifyContent: "center"
   },
-  textInput: {
-    width: "80%",
-    borderBottomColor: "black",
-    borderBottomWidth: 1
+  list: {
+    height: "85%",
+    margin: 5
+  },
+  button: {
+    height: "5%",
+    margin: 5
   }
 });
