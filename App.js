@@ -5,19 +5,22 @@ import AufgabenItem from "./components/AufgabenItem";
 import AufgabenInput from "./components/AufgabenInput";
 import AufgabenKopf from "./components/AufgabenKopf";
 
+var count = 0;
+
 export default function App() {
   const [aufgabenListe, setAufgabenListe] = useState([]);
   const [isAddMode, setIsAddMode] = useState(false);
   const [erledigtCounter, setErledigtCounter] = useState(0);
+  const [updated, setUpdated] = useState(false);
 
   const addAufgabeHandler = aufgabenText => {
     var id = Math.random().toString();
     setAufgabenListe(currentAufgabenListe => [
       ...currentAufgabenListe,
-      { key: id, value: aufgabenText, istErledigt: false }
+      { key: id, value: aufgabenText, istErledigt: 0 }
     ]);
     setIsAddMode(false);
-    countErledigteAufgaben();
+    setUpdated(true);
   };
 
   const cancelAufgabenHandler = () => {
@@ -28,36 +31,35 @@ export default function App() {
     setAufgabenListe(currentAufgabenListe => {
       return currentAufgabenListe.filter(aufgabe => aufgabe.key !== aufgabeKey);
     });
-    countErledigteAufgaben();
+    setUpdated(true);
   };
 
   const checkAufgabeHandler = aufgabeKey => {
     setAufgabenListe(currentAufgabenListe => {
       return currentAufgabenListe.map(aufgabe => {
         if (aufgabe.key === aufgabeKey) {
-          aufgabe.istErledigt = true;
-          aufgabe.value += " | Erledigt";
+          if (aufgabe.istErledigt === 0) {
+            var tmp = aufgabe.value;
+            aufgabe.value = String.fromCharCode(0x2714) + " Erledigt: " + tmp;
+          }
+          aufgabe.istErledigt = 1;
           return aufgabe;
         } else {
           return aufgabe;
         }
       });
     });
-    countErledigteAufgaben();
+    setUpdated(true);
   };
 
-  const countErledigteAufgaben = () => {
-    var count = 0;
-    if (aufgabenListe.length > 0) {
-      aufgabenListe.forEach(element => {
-        if (element.istErledigt) {
-          count++;
-        }
-      });
-    }
+  if (updated) {
+    count = 0;
+    aufgabenListe.forEach(element => {
+      count += element.istErledigt;
+    });
+    setUpdated(false);
     setErledigtCounter(count);
-    console.log(aufgabenListe);
-  };
+  }
 
   const head = "Erledigte Aufgaben:";
   return (
