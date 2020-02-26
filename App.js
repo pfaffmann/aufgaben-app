@@ -5,7 +5,7 @@ import AufgabenItem from "./components/AufgabenItem";
 import AufgabenInput from "./components/AufgabenInput";
 import AufgabenKopf from "./components/AufgabenKopf";
 
-var count = 0;
+var count;
 
 export default function App() {
   const [aufgabenListe, setAufgabenListe] = useState([]);
@@ -61,12 +61,11 @@ export default function App() {
     setErledigtCounter(count);
   }
 
-  const head = "Erledigte Aufgaben:";
   return (
     <View style={styles.screen}>
       <View style={styles.header}>
         <AufgabenKopf
-          title={head}
+          title={"Erledigte Aufgaben: "}
           anzErledigt={erledigtCounter}
           anzGesamt={aufgabenListe.length}
         />
@@ -109,7 +108,7 @@ const styles = StyleSheet.create({
     padding: 20
   },
   header: {
-    backgroundColor: "#eee",
+    backgroundColor: "#dedede",
     height: "10%",
     alignItems: "center",
     justifyContent: "center"
