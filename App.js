@@ -40,7 +40,8 @@ export default function App() {
         if (aufgabe.key === aufgabeKey) {
           if (aufgabe.istErledigt === 0) {
             var tmp = aufgabe.value;
-            aufgabe.value = String.fromCodePoint(0x2714,0xfe0f) + " Erledigt: " + tmp; //Unicode String für grünen Haken
+            aufgabe.value =
+              String.fromCodePoint(0x2714, 0xfe0f) + " Erledigt: " + tmp; //Unicode String für grünen Haken
           }
           aufgabe.istErledigt = 1;
           return aufgabe;
